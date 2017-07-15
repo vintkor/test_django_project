@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %} List all posts {% endblock title %}
+
+{% block content %}
+    <div class="blog">
+        <div class="container">
+            {% for post in posts %}
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                {% if post.post_image %}
+                                    <img src="{{ MEDIA_URL }}{{ post.post_image }}" alt="{{ post.post_title }}" class="img-responsive img-thumbnail">
+                                {% else %}
+                                    <img src="//placehold.it/300x230" class="img-responsive img-thumbnail">
+                                {% endif %}
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <h2 class="pull-left" style="margin-top: 0;">{{ post.post_title }}</h2>
+                                        <span class="badge pull-right">{{ post.comment_parent.all | length }}</span>
+                                        <span class="badge pull-right">{{ post.post_category }}</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        {% autoescape off %}
+                                            {{ post.post_text | truncatewords_html:40 }}
+                                        {% endautoescape %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                        <div class="col-sm-12">
+                                            <div>
+                                                <a href="{% url 'blog_single_post' post.id %}" class="btn btn-primary btn-sm">Read more</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

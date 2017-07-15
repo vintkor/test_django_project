@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ post.post_title }} {% endblock title %}
+
+{% block content %}
+    <div class="blog">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h1 class="text-center">{{ post.post_title }}</h1>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">Category: <span class="badge">{{ post.post_category }}</span></div>
+                <div class="col-sm-4 text-center">Created: <span class="badge">{{ post.created }}</span></div>
+                <div class="col-sm-4 text-right">Comments: <span class="badge">{{ post.comment_parent.all | length }}</span></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div style="text-align: justify;">
+                        {% autoescape off %}
+                            {% if post.post_image %}
+                                    <img class="img-responsive img-thumbnail" style="max-width: 400px; float: left; margin-right: 20px; margin-bottom: 10px;" src="{{ MEDIA_URL }}{{ post.post_image }}" alt="{{ post.post_title }}">
+                                {% endif %}
+                            {{ post.post_text }}
+                        {% endautoescape %}
+                    </div>
+                </div>
+            </div>
+            {% if post.comment_parent.all %}
+                <h3 class="text-center">Comments for {{ post.post_title }}</h3>
+                {% for comment in post.comment_parent.all %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Comment #{{ comment.id }}
+                        <span class="text-default pull-right">{{ comment.created }}</span>
+                    </div>
+                    <div class="panel-body">{{ comment.comment_text }}</div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
