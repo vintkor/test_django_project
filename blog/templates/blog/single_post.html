@@ -29,12 +29,26 @@
                     </div>
                 </div>
             </div>
+            <h3 class="text-center">Comments for {{ post.post_title }}</h3>
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <form class="form" action="" method="post">
+                        {% csrf_token %}
+                        {{ form.comment_parent }}
+                        <div class="form-group">
+                            <label for="id_comment_text">Comment text</label>
+                            {{ form.comment_text.errors }}
+                            {{ form.comment_text }}
+                        </div>
+                        <button class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
             {% if post.comment_parent.all %}
-                <h3 class="text-center">Comments for {{ post.post_title }}</h3>
                 {% for comment in post.comment_parent.all %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Comment #{{ comment.id }}
+                        Comment #{{ comment.id }} by Username
                         <span class="text-default pull-right">{{ comment.created }}</span>
                     </div>
                     <div class="panel-body">{{ comment.comment_text }}</div>

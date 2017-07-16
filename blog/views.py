@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
 from blog.models import Post, Category, Comment
+from .forms import CommentForm
 
 
 def home(request):
@@ -15,4 +15,9 @@ def all_posts(request):
 
 def single_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    return render(request, 'blog/single_post.html', {'post': post})
+    form = CommentForm(initial={'comment_parent': post_id})
+    context = {'post': post, 'form': form}
+    if request.POST:
+        f = CommentForm(request.POST)
+        f.save()
+    return render(request, 'blog/single_post.html', context)
