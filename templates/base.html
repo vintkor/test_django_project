@@ -16,13 +16,44 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-            <a class="navbar-brand" href="{% url 'home' %}">Test Django</a>
+                <a class="navbar-brand" href="{% url 'home' %}">Test Django</a>
             </div>
             <div id="navbar" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="{% url 'all_posts' %}">Блог</a></li>
-                    <li><a target="_blank" href="/admin">Admin</a></li>
+                <ul class="nav navbar-nav dropdown">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Blog<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'all_posts' %}">Блог</a></li>
+                        {% load mptt_tags %}
+                        {% recursetree nodes %}
+                            <li>
+                                {% if node.category_image %}
+                                    <img src="{{ MEDIA_URL }}{{ node.category_image }}" width="20" alt="{{ node.category_title }}">
+                                {% endif %}
+                                <a href="{% url 'blog_cat_post' node.id %}">{{ node.category_title }}</a>
+                                {% if not node.is_leaf_node %}
+                                    <ul class="children">
+                                        {{ children }}
+                                    </ul>
+                                {% endif %}
+                            </li>
+                        {% endrecursetree %}
+                        </ul>
+                    </li>
                 </ul>
+                {% if user.username %}
+                    <p class="navbar-text navbar-right">
+                        Signed in as <a href="#" class="navbar-link">{{ user.username }}</a>
+                        {% if user.is_superuser %}
+                            <a target="_blank" href="/admin" class="navbar-link">Admin panel</a>
+                        {% endif %}
+                    </p>
+                {% else %}
+                    <p class="navbar-text navbar-right">
+                        <a href="#" class="navbar-link">Sing in</a> /
+                        <a href="#" class="navbar-link">Sing up</a>
+                    </p>
+                {% endif %}
             </div>
         </div>
     </nav>
@@ -40,3 +71,5 @@
 </body>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://bootswatch.com/cosmo/bootstrap.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
