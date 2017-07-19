@@ -16,14 +16,14 @@ class CatalogImageInline(admin.StackedInline):
 
 
 class CatalogProductAdmin(admin.ModelAdmin):
-    list_display = ["title", "category", "active", "price", "currency", "get_count_comments", "created", "updated"]
+    list_display = ["title", "category", "active", "price", "currency", "step", "get_count_comments", "created", "updated"]
     list_filter = ["active", "category"]
     search_fields = ['title']
     inlines = [CatalogCommentInline, CatalogImageInline]
     fieldsets = [
         (None, {
             'classes': ('suit-tab', 'suit-tab-product',),
-            'fields': ["title", "category", "price", "currency", "description", "text", "active"]
+            'fields': ["title", "category", "price", "currency", "step", "description", "text", "active"]
         }),
     ]
 

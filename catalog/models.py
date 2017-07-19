@@ -2,6 +2,7 @@ from django.db import models
 from testsite.baseModel import BaseModel
 from ckeditor_uploader.fields import RichTextUploadingField
 from mptt.models import MPTTModel, TreeForeignKey
+from feature.models import Set, Feature, Unit, Value
 
 
 class CatalogCategory(BaseModel, MPTTModel):
@@ -10,6 +11,7 @@ class CatalogCategory(BaseModel, MPTTModel):
     image = models.ImageField(blank=True, default="", upload_to="categories")
     description = RichTextUploadingField(verbose_name="Описание категории", blank=True, default="")
     active = models.BooleanField(default=True, verbose_name="Вкл/Выкл")
+    feature_set = models.ManyToManyField(Set, verbose_name="Набор характеристик")
 
     class Meta:
         verbose_name = "Категория"
@@ -58,6 +60,7 @@ class CatalogProduct(BaseModel):
     category = TreeForeignKey(CatalogCategory, blank=True)
     price = models.DecimalField(verbose_name="Цена", max_digits=8, decimal_places=2)
     currency = models.ForeignKey(CatalogCurrency, verbose_name="Валюта", blank=True, null=True, on_delete=models.SET_NULL)
+    step = models.DecimalField(verbose_name="Шаг", max_digits=8, decimal_places=3, default=1)
     description = models.CharField(max_length=170, blank=True, verbose_name="META DESC", default="")
     text = RichTextUploadingField(verbose_name="Текст поста", blank=True, default="")
     active = models.BooleanField(default=True, verbose_name="Вкл/Выкл")
@@ -76,6 +79,29 @@ class CatalogProduct(BaseModel):
         """ Получает количество комментарив поста """
         count = CatalogComment.objects.filter(parent=self.id).count()
         return count
+
+    def save(self, *args, **kwargs):
+        # if self.category:
+        #     super(Product, self).save(*args, **kwargs)
+        #     # we create properties if not exist
+        #     for cp in CategoryProperty.objects.filter(category=self.category):
+        #         pp = ProductProperty.objects.filter(category_property=cp, product=self)
+        #         if not pp:
+        #             pp = ProductProperty(category_property=cp, product=self, value="--")
+        #             pp.save()
+        #     # we create filters if not exist
+        #     for fc in FilterCategory.objects.filter(category=self.category):
+        #         pf = ProductFilter.objects.filter(filter_category=fc, product=self)
+        #         if not pf:
+        #             pf = ProductFilter(filter_category=fc, product=self)
+        #             pf.save()
+        if self.category:
+            super(CatalogProduct, self).save(*args, **kwargs)
+            print("=================  Cat: {}  =================".format(self.category))
+            for feature_set in Set.objects.filter(catalogcategory=self.category):
+                print("=================  Set: {}  =================".format(feature_set))
+                for feature in Feature.objects.filter(set=feature_set):
+                    print(feature)
 
     show_image.allow_tags = True
     show_image.short_description = "Главное изображение"

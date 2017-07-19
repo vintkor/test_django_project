@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'blog',
+    'feature',
     'catalog',
 ]
 
@@ -86,7 +87,7 @@ WSGI_APPLICATION = 'testsite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3_12'),
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
