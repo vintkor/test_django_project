@@ -1,6 +1,7 @@
 from django.contrib import admin
 from mptt.admin import DraggableMPTTAdmin
-from .models import *
+from .models import CatalogCategory, CatalogComment, CatalogCurrency, CatalogImage, CatalogProduct, ProductFeature
+from feature.models import Feature
 
 
 class CatalogCommentInline(admin.StackedInline):
@@ -15,11 +16,17 @@ class CatalogImageInline(admin.StackedInline):
     suit_classes = 'suit-tab suit-tab-image'
 
 
+class FeatureInline(admin.TabularInline):
+    extra = 0
+    model = ProductFeature
+    suit_classes = 'suit-tab suit-tab-feature'
+
+
 class CatalogProductAdmin(admin.ModelAdmin):
     list_display = ["title", "category", "active", "price", "currency", "step", "get_count_comments", "created", "updated"]
     list_filter = ["active", "category"]
     search_fields = ['title']
-    inlines = [CatalogCommentInline, CatalogImageInline]
+    inlines = [CatalogCommentInline, CatalogImageInline, FeatureInline]
     fieldsets = [
         (None, {
             'classes': ('suit-tab', 'suit-tab-product',),
@@ -27,7 +34,7 @@ class CatalogProductAdmin(admin.ModelAdmin):
         }),
     ]
 
-    suit_form_tabs = (('product', 'Товар'), ('comment', 'Комментарии'), ('image', 'Изображения'))
+    suit_form_tabs = (('product', 'Товар'), ('comment', 'Комментарии'), ('image', 'Изображения'), ('feature', 'Характеристика'))
 
 
 class CatalogCommentAdmin(admin.ModelAdmin):

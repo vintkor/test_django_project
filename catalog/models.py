@@ -99,9 +99,9 @@ class CatalogProduct(BaseModel):
             super(CatalogProduct, self).save(*args, **kwargs)
             print("=================  Cat: {}  =================".format(self.category))
             for feature_set in Set.objects.filter(catalogcategory=self.category):
-                print("=================  Set: {}  =================".format(feature_set))
+                print("         =======  Set: {}  =================".format(feature_set))
                 for feature in Feature.objects.filter(set=feature_set):
-                    print(feature)
+                    print(Unit.objects.filter(feature=feature))
 
     show_image.allow_tags = True
     show_image.short_description = "Главное изображение"
@@ -110,6 +110,13 @@ class CatalogProduct(BaseModel):
     class Meta:
         verbose_name = "Товар"
         verbose_name_plural = "Товары"
+
+
+class ProductFeature(BaseModel):
+    feature = models.ForeignKey(Feature, default=None, null=True, verbose_name="арактеристака", on_delete=models.SET_NULL)
+    value = models.CharField(default=None, verbose_name="Значение", max_length=150)
+    unit = models.ForeignKey(Unit, default=None, null=True, verbose_name="Единица измерения", on_delete=models.SET_NULL)
+    product = models.ForeignKey(CatalogProduct, default=None, null=True, verbose_name="Товар", on_delete=models.SET_NULL)
 
 
 class CatalogComment(BaseModel):
