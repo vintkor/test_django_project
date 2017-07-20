@@ -81,27 +81,15 @@ class CatalogProduct(BaseModel):
         return count
 
     def save(self, *args, **kwargs):
-        # if self.category:
-        #     super(Product, self).save(*args, **kwargs)
-        #     # we create properties if not exist
-        #     for cp in CategoryProperty.objects.filter(category=self.category):
-        #         pp = ProductProperty.objects.filter(category_property=cp, product=self)
-        #         if not pp:
-        #             pp = ProductProperty(category_property=cp, product=self, value="--")
-        #             pp.save()
-        #     # we create filters if not exist
-        #     for fc in FilterCategory.objects.filter(category=self.category):
-        #         pf = ProductFilter.objects.filter(filter_category=fc, product=self)
-        #         if not pf:
-        #             pf = ProductFilter(filter_category=fc, product=self)
-        #             pf.save()
         if self.category:
             super(CatalogProduct, self).save(*args, **kwargs)
-            print("=================  Cat: {}  =================".format(self.category))
-            for feature_set in Set.objects.filter(catalogcategory=self.category):
-                print("         =======  Set: {}  =================".format(feature_set))
-                for feature in Feature.objects.filter(set=feature_set):
-                    print(Unit.objects.filter(feature=feature))
+            for s in Set.objects.filter(catalogcategory=self.category):
+                for f in Feature.objects.filter(set=s):
+                    try:
+                        feature = ProductFeature.objects.get(product=self, feature=f)
+                    except ProductFeature.DoesNotExist:
+                        feature = ProductFeature(product=self, feature=f)
+                        feature.save()
 
     show_image.allow_tags = True
     show_image.short_description = "Главное изображение"
@@ -114,8 +102,8 @@ class CatalogProduct(BaseModel):
 
 class ProductFeature(BaseModel):
     feature = models.ForeignKey(Feature, default=None, null=True, verbose_name="арактеристака", on_delete=models.SET_NULL)
-    value = models.CharField(default=None, verbose_name="Значение", max_length=150)
-    unit = models.ForeignKey(Unit, default=None, null=True, verbose_name="Единица измерения", on_delete=models.SET_NULL)
+    value = models.CharField(default=None, null=True, blank=True, verbose_name="Значение", max_length=150)
+    unit = models.ForeignKey(Unit, default=None, blank=True, null=True, verbose_name="Единица измерения", on_delete=models.SET_NULL)
     product = models.ForeignKey(CatalogProduct, default=None, null=True, verbose_name="Товар", on_delete=models.SET_NULL)
 
 
