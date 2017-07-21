@@ -86,7 +86,7 @@ class CatalogProduct(BaseModel):
             for s in Set.objects.filter(catalogcategory=self.category):
                 for f in Feature.objects.filter(set=s):
                     try:
-                        feature = ProductFeature.objects.get(product=self, feature=f)
+                        ProductFeature.objects.get(product=self, feature=f)
                     except ProductFeature.DoesNotExist:
                         feature = ProductFeature(product=self, feature=f)
                         feature.save()

@@ -1,22 +1,22 @@
 from django.shortcuts import render, get_object_or_404
-from blog.models import Post, Category, Comment
+from blog.models import Post
 from .forms import CommentForm
-from django.contrib import auth
+from testsite.settings import SITE_THEME
 
 
 def home(request):
     context = {"name": "Django"}
-    return render(request, 'base.html', context)
+    return render(request, SITE_THEME + '/base.html', context)
 
 
 def all_posts(request):
     posts = Post.objects.all().order_by("-created")
-    return render(request, 'blog/blog_base.html', {"posts": posts})
+    return render(request, SITE_THEME + '/blog/blog_base.html', {"posts": posts})
 
 
 def cat_posts(request, cat_id):
     posts = Post.objects.filter(post_category=cat_id).order_by("-created")
-    return render(request, 'blog/blog_base.html', {"posts": posts})
+    return render(request, SITE_THEME + '/blog/blog_base.html', {"posts": posts})
 
 
 def single_post(request, post_id):
@@ -26,4 +26,4 @@ def single_post(request, post_id):
     if request.POST:
         f = CommentForm(request.POST)
         f.save()
-    return render(request, 'blog/single_post.html', context)
+    return render(request, SITE_THEME + '/blog/single_post.html', context)
