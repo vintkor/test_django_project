@@ -26,11 +26,12 @@ class CatalogProductAdmin(admin.ModelAdmin):
     list_display = ["title", "category", "active", "price", "currency", "step", "get_count_comments", "created", "updated"]
     list_filter = ["active", "category"]
     search_fields = ['title']
+    prepopulated_fields = {"slug": ("title",)}
     inlines = [CatalogCommentInline, CatalogImageInline, FeatureInline]
     fieldsets = [
         (None, {
             'classes': ('suit-tab', 'suit-tab-product',),
-            'fields': ["title", "category", "price", "currency", "step", "description", "text", "active"]
+            'fields': ["title", "slug", "category", "price", "currency", "step", "description", "text", "image", "active"]
         }),
     ]
 
@@ -42,7 +43,7 @@ class CatalogCommentAdmin(admin.ModelAdmin):
 
 
 class CatalogImageAdmin(admin.ModelAdmin):
-    list_display = ["parent", "show_image", "is_main", "active"]
+    list_display = ["parent", "show_image", "active"]
 
 
 class CatalogCurrencyAdmin(admin.ModelAdmin):
@@ -58,4 +59,5 @@ admin.site.register(
     DraggableMPTTAdmin,
     list_display=('tree_actions', 'indented_title', 'get_count_product', 'show_image', 'active'),
     list_display_links=('indented_title',),
+    prepopulated_fields={"slug": ("title",)},
 )

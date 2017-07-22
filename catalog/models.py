@@ -7,6 +7,7 @@ from feature.models import Set, Feature, Unit, Value
 
 class CatalogCategory(BaseModel, MPTTModel):
     title = models.CharField(verbose_name='Категория', max_length=255)
+    slug = models.SlugField(verbose_name="Слаг", max_length=255, default='')
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
     image = models.ImageField(blank=True, default="", upload_to="categories")
     description = RichTextUploadingField(verbose_name="Описание категории", blank=True, default="")
@@ -57,12 +58,14 @@ class CatalogCurrency(BaseModel):
 
 class CatalogProduct(BaseModel):
     title = models.CharField(max_length=255, verbose_name="Заголовок")
+    slug = models.SlugField(verbose_name="Слаг", max_length=255, default='')
     category = TreeForeignKey(CatalogCategory, blank=True)
     price = models.DecimalField(verbose_name="Цена", max_digits=8, decimal_places=2)
     currency = models.ForeignKey(CatalogCurrency, verbose_name="Валюта", blank=True, null=True, on_delete=models.SET_NULL)
     step = models.DecimalField(verbose_name="Шаг", max_digits=8, decimal_places=3, default=1)
     description = models.CharField(max_length=170, blank=True, verbose_name="META DESC", default="")
     text = RichTextUploadingField(verbose_name="Текст поста", blank=True, default="")
+    image = models.ImageField(verbose_name="Изображение", blank=True, default='', upload_to="catalog/product_created-%Y-%m-%d")
     active = models.BooleanField(default=True, verbose_name="Вкл/Выкл")
 
     def __str__(self):
@@ -79,6 +82,9 @@ class CatalogProduct(BaseModel):
         """ Получает количество комментарив поста """
         count = CatalogComment.objects.filter(parent=self.id).count()
         return count
+
+    def get_all_images(self):
+        return CatalogImage.objects.filter(active=True, parent=self)
 
     def save(self, *args, **kwargs):
         if self.category:
@@ -123,7 +129,6 @@ class CatalogImage(BaseModel):
     parent = models.ForeignKey(CatalogProduct, related_name="images", verbose_name="Изображение")
     image = models.ImageField(blank=True, default='', upload_to="catalog/product_created-%Y-%m-%d", verbose_name="Изображение")
     active = models.BooleanField(default=True, verbose_name="Вкл/Выкл")
-    is_main = models.BooleanField(default=True, verbose_name="Главное")
 
     class Meta:
         verbose_name = "Изображение"

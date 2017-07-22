@@ -1,0 +1,38 @@
+{% extends 'first/base.html' %}
+{% load l10n %}
+
+
+{% block title %} {{ product.title }} {% endblock title %}
+
+{% block content %}
+<div class="catalog">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="pull-left" style="margin: 0;">{{ product.title }}</h1>
+            </div>
+        </div>
+        <hr>
+        <div class="row" style="margin-bottom: 30px;">
+            <div class="col-md-8">
+                <img class="img-responsive img-thumbnail" src="{% if product.image %}{{ MEDIA_URL }}{{ product.image }}{% else %}//placehold.it/300x360{% endif %}" alt="{{ product.title }}">
+                <div class="row">
+                    {% for image in images %}
+                        <div class="col-md-3"><img src="{{ MEDIA_URL }}{{ image.image }}" class="img-responsive"></div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                {{ product.text | safe | truncatewords_html:20}}
+                <div style="font-size: 40px; font-weight: 700; color: #d33; margin-bottom: 20px;">{{ product.price }} грн</div>
+                <div><a href="#" class="btn btn-primary">Add to cart</a></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {{ product.text | safe}}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
