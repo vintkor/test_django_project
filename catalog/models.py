@@ -62,6 +62,7 @@ class CatalogProduct(BaseModel):
     category = TreeForeignKey(CatalogCategory, blank=True)
     price = models.DecimalField(verbose_name="Цена", max_digits=8, decimal_places=2)
     currency = models.ForeignKey(CatalogCurrency, verbose_name="Валюта", blank=True, null=True, on_delete=models.SET_NULL)
+    unit = models.ForeignKey(Unit, verbose_name="Единица измерения", default=None, on_delete=models.SET_NULL, null=True)
     step = models.DecimalField(verbose_name="Шаг", max_digits=8, decimal_places=3, default=1)
     description = models.CharField(max_length=170, blank=True, verbose_name="META DESC", default="")
     text = RichTextUploadingField(verbose_name="Текст поста", blank=True, default="")
@@ -85,6 +86,9 @@ class CatalogProduct(BaseModel):
 
     def get_all_images(self):
         return CatalogImage.objects.filter(active=True, parent=self)
+
+    def get_price_in_main_currency(self):
+        return self.currency.course * self.price
 
     def save(self, *args, **kwargs):
         if self.category:

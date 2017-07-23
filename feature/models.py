@@ -15,6 +15,7 @@ class Feature(BaseModel):
 
 class Unit(BaseModel):
     unit = models.CharField(verbose_name="Единица измерения", max_length=150)
+    short_name = models.CharField(max_length=30, verbose_name="Краткое название", default='')
     feature = models.ForeignKey(Feature, null=True, default=None, verbose_name="Характеристика", on_delete=models.SET_NULL)
 
     class Meta:

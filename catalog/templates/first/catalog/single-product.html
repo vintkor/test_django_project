@@ -24,7 +24,7 @@
             </div>
             <div class="col-md-4">
                 {{ product.text | safe | truncatewords_html:20}}
-                <div style="font-size: 40px; font-weight: 700; color: #d33; margin-bottom: 20px;">{{ product.price }} грн</div>
+                <div style="font-size: 40px; font-weight: 700; color: #d33; margin-bottom: 20px;">{{ product.get_price_in_main_currency | floatformat:2 }} грн/{{ product.unit.short_name }}</div>
                 <div><a href="#" class="btn btn-primary">Add to cart</a></div>
             </div>
         </div>

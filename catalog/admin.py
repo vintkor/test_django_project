@@ -23,7 +23,7 @@ class FeatureInline(admin.TabularInline):
 
 
 class CatalogProductAdmin(admin.ModelAdmin):
-    list_display = ["title", "category", "active", "price", "currency", "step", "get_count_comments", "created", "updated"]
+    list_display = ["title", "category", "active", "price", "currency", "unit", "step", "get_count_comments", "created", "updated"]
     list_filter = ["active", "category"]
     search_fields = ['title']
     prepopulated_fields = {"slug": ("title",)}
@@ -31,7 +31,7 @@ class CatalogProductAdmin(admin.ModelAdmin):
     fieldsets = [
         (None, {
             'classes': ('suit-tab', 'suit-tab-product',),
-            'fields': ["title", "slug", "category", "price", "currency", "step", "description", "text", "image", "active"]
+            'fields': ["title", "slug", "category", "price", "currency", "unit", "step", "description", "text", "image", "active"]
         }),
     ]
 
