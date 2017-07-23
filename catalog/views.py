@@ -5,13 +5,7 @@ from cart.models import Cart, Item
 from django.utils.crypto import get_random_string
 
 
-def all_products(request):
-    products = CatalogProduct.objects.all().filter(active=True).order_by('-created')
-    print(products)
-    context = {
-        "products": products,
-    }
-
+def add_to_cart(request, context, view):
     if request.POST:
         if 'cart_id' in request.COOKIES:
             session = request.COOKIES['cart_id']
@@ -23,8 +17,20 @@ def all_products(request):
         cart = Cart.objects.get(session=session)
         item = Item(cart=cart, product=product, count=count)
         item.save()
-        response = render(request, SITE_THEME + '/catalog/list_view.html', context)
+        response = render(request, SITE_THEME + view, context)
         response.set_cookie('cart_id', session)
+        return response
+
+
+def all_products(request):
+    products = CatalogProduct.objects.all().filter(active=True).order_by('-created')
+    print(products)
+    context = {
+        "products": products,
+    }
+
+    if request.POST:
+        response = add_to_cart(request=request, context=context, view='/catalog/list_view.html')
         return response
 
     return render(request, SITE_THEME + '/catalog/list_view.html', context)
@@ -36,4 +42,7 @@ def single_post(request, product_id):
         'product': product,
         'images': CatalogProduct.get_all_images(product_id),
     }
+    if request.POST:
+        response = add_to_cart(request=request, context=context, view='/catalog/single-product.html')
+        return response
     return render(request, SITE_THEME + '/catalog/single-product.html', context)

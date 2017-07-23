@@ -32,9 +32,7 @@
                                 {% endif %}
                                 <a href="{% url 'blog_cat_post' node.id %}">{{ node.category_title }}</a>
                                 {% if not node.is_leaf_node %}
-                                    <ul class="children">
-                                        {{ children }}
-                                    </ul>
+                                    <ul class="children">{{ children }}</ul>
                                 {% endif %}
                             </li>
                         {% endrecursetree %}
@@ -47,6 +45,9 @@
                         </ul>
                     </li>
                 </ul>
+                <p class="navbar-text navbar-right">
+                    <a href="#" class="navbar-link">Cart {{ cart_count }}</a>
+                </p>
                 {% if user.username %}
                     <p class="navbar-text navbar-right">
                         Signed in as <a href="#" class="navbar-link">{{ user.username }}</a>

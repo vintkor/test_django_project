@@ -74,6 +74,7 @@ TEMPLATES = [
 
                 'context_processors.top_menu.user',
                 'context_processors.top_menu.categories',
+                'context_processors.top_menu.cart',
             ],
         },
     },

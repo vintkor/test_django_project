@@ -1,15 +1,24 @@
 from django.template.context_processors import request
 from django.contrib import auth
 from blog.models import Category
+from cart.models import Item, Cart
 
 
-def user(request):
-    user = auth.get_user(request)
-    context = {'user': user}
-    return context
+def cart(request):
+    if 'cart_id' in request.COOKIES:
+        session = request.COOKIES.get('cart_id')
+        items = Item.objects.filter(cart__session=session).count()
+        return {'cart_count': items}
+    return {'cart_count': 0}
 
 
 def categories(request):
-    categories = Category.objects.all()
-    context = {'nodes': categories}
+    categories2 = Category.objects.all()
+    context = {'nodes': categories2}
+    return context
+
+
+def user(request):
+    user2 = auth.get_user(request)
+    context = {'user': user2}
     return context
