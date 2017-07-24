@@ -24,5 +24,6 @@ urlpatterns = [
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^blog/', include('blog.urls')),
     url(r'^catalog/', include('catalog.urls')),
+    url(r'^cart/', include('cart.urls')),
     url(r'^$', views.home, name="home"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

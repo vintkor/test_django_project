@@ -35,6 +35,9 @@ class Item(BaseModel):
     def __str__(self):
         return "{}".format(self.product)
 
+    def get_total_row(self):
+        return round(self.count * self.product.get_price_in_main_currency(), 2)
+
     class Meta:
         verbose_name_plural = "Товары"
         verbose_name = "Товар"

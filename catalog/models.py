@@ -116,6 +116,10 @@ class ProductFeature(BaseModel):
     unit = models.ForeignKey(Unit, default=None, blank=True, null=True, verbose_name="Единица измерения", on_delete=models.SET_NULL)
     product = models.ForeignKey(CatalogProduct, default=None, null=True, verbose_name="Товар", on_delete=models.SET_NULL)
 
+    class Meta:
+        verbose_name = "Характеристика товара"
+        verbose_name_plural = "Характеристики товара"
+
 
 class CatalogComment(BaseModel):
     parent = models.ForeignKey(CatalogProduct, related_name="parent", verbose_name="Товар коментария")
