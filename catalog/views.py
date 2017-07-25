@@ -12,11 +12,7 @@ def add_to_cart(request, context, view):
         else:
             session = get_random_string(100)
             Cart(session=session).save()
-        count = request.POST.get('count')
-        product = CatalogProduct.objects.get(id=request.POST.get('product'))
-        cart = Cart.objects.get(session=session)
-        item = Item(cart=cart, product=product, count=count)
-        item.save()
+        Item.add_to_cart(product_id=request.POST.get('product'), session=session, count=request.POST.get('count'))
         response = render(request, SITE_THEME + view, context)
         response.set_cookie('cart_id', session)
         return response
@@ -24,11 +20,7 @@ def add_to_cart(request, context, view):
 
 def all_products(request):
     products = CatalogProduct.objects.all().filter(active=True).order_by('-created')
-    print(products)
-    context = {
-        "products": products,
-    }
-
+    context = {"products": products,}
     if request.POST:
         response = add_to_cart(request=request, context=context, view='/catalog/list_view.html')
         return response

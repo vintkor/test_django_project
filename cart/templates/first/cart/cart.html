@@ -2,7 +2,7 @@
 {% load l10n %}
 
 
-{% block title %} List all products {% endblock title %}
+{% block title %} Ваша корзина {% endblock title %}
 
 {% block content %}
 <div class="cart">
@@ -32,7 +32,7 @@
                                 <tr>
                                     <th colspan="2"></th>
                                     <th>Итого:</th>
-                                    <th>{{ cart.get_total_price }}</th>
+                                    <th>{{ cart.get_total_price }} грн</th>
                                     <th></th>
                                 </tr>
                             </tfoot>
@@ -41,9 +41,9 @@
                                     <tr>
                                         <td><a href="{% url 'catalog_single_product' item.product.id %}">{{ item.product }}</a></td>
                                         <td>
-                                            <form action="" method="POST">
+                                            <form action="{% url 'update_cart' %}" method="POST">
                                                 {% csrf_token %}
-                                                <input type="hidden" name="item" value="{{ item.id }}">
+                                                <input type="hidden" name="product_id" value="{{ item.id }}">
                                                 <input name="count" type="number" value="{{ item.count | unlocalize }}" step="{{ item.product.step | unlocalize }}" min="{{ item.product.step | unlocalize }}">
                                                 <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-refresh"></span></button>
                                             </form>

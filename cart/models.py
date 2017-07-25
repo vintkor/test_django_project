@@ -1,6 +1,7 @@
 from django.db import models
 from catalog.models import CatalogProduct
 from testsite.baseModel import BaseModel
+from decimal import Decimal
 
 
 class Cart(BaseModel):
@@ -29,7 +30,7 @@ class Cart(BaseModel):
 
 class Item(BaseModel):
     product = models.ForeignKey(CatalogProduct, verbose_name="Товар", null=True, default=None, blank=True)
-    count = models.DecimalField(max_digits=15, decimal_places=2, verbose_name="Количество")
+    count = models.DecimalField(max_digits=15, decimal_places=3, verbose_name="Количество")
     cart = models.ForeignKey(Cart, verbose_name="Корзина", null=True, default=None, on_delete=models.SET_NULL)
 
     def __str__(self):
@@ -37,6 +38,38 @@ class Item(BaseModel):
 
     def get_total_row(self):
         return round(self.count * self.product.get_price_in_main_currency(), 2)
+
+    @staticmethod
+    def is_product_in_cart(product, cart):
+        """  Проверяет есть ли товар в корзине @:return Boolean """
+        try:
+            Item.objects.get(product_id=product.id, cart__session=cart.session)
+            return True
+        except Item.DoesNotExist:
+            return False
+
+    @staticmethod
+    def add_to_cart(product_id, session, count):
+        """ Добавляет товар в корзину """
+        cart = Cart.objects.get(session=session)
+        product = CatalogProduct.objects.get(id=product_id)
+        if Item.is_product_in_cart(product, cart):
+            Item.update_count(product, cart, count)
+        else:
+            item = Item(count=count, product=product, cart=cart)
+            item.save()
+
+    @staticmethod
+    def update_count(product, cart, count, update=False):
+        """  Обновляет количество товара в корзине """
+        if update:
+            update_product = Item.objects.get(id=product.id, cart__session=cart.session)
+            update_product.count = count
+        else:
+            update_product = Item.objects.get(product_id=product.id, cart__session=cart.session)
+            old_count = update_product.count
+            update_product.count = old_count + Decimal(count)
+        update_product.save()
 
     class Meta:
         verbose_name_plural = "Товары"

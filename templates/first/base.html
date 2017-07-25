@@ -46,7 +46,7 @@
                     </li>
                 </ul>
                 <p class="navbar-text navbar-right">
-                    <a href="{% url 'show_cart' %}" class="navbar-link">Cart {{ cart_count }}</a>
+                    <a href="{% url 'show_cart' %}" class="navbar-link"><span class="badge" style="font-size: 14px; background: #555;">Cart {{ cart_count }} - {{ cart_total }} грн</span> </a>
                 </p>
                 {% if user.username %}
                     <p class="navbar-text navbar-right">
