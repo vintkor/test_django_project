@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'feature',
     'catalog',
     'cart',
+    'spider',
 ]
 
 MIDDLEWARE = [

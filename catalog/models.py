@@ -58,11 +58,11 @@ class CatalogCurrency(BaseModel):
 
 class CatalogProduct(BaseModel):
     title = models.CharField(max_length=255, verbose_name="Заголовок")
-    slug = models.SlugField(verbose_name="Слаг", max_length=255, default='')
-    category = TreeForeignKey(CatalogCategory, blank=True)
-    price = models.DecimalField(verbose_name="Цена", max_digits=8, decimal_places=2)
+    slug = models.SlugField(verbose_name="Слаг", max_length=255, default='', blank=True, null=True)
+    category = TreeForeignKey(CatalogCategory, blank=True, null=True)
+    price = models.DecimalField(verbose_name="Цена", max_digits=8, decimal_places=2, blank=True, null=True)
     currency = models.ForeignKey(CatalogCurrency, verbose_name="Валюта", blank=True, null=True, on_delete=models.SET_NULL)
-    unit = models.ForeignKey(Unit, verbose_name="Единица измерения", default=None, on_delete=models.SET_NULL, null=True)
+    unit = models.ForeignKey(Unit, verbose_name="Единица измерения", default=None, on_delete=models.SET_NULL, blank=True,  null=True)
     step = models.DecimalField(verbose_name="Шаг", max_digits=8, decimal_places=3, default=1)
     description = models.CharField(max_length=170, blank=True, verbose_name="META DESC", default="")
     text = RichTextUploadingField(verbose_name="Текст поста", blank=True, default="")

@@ -14,7 +14,7 @@ def add_to_cart(request, context, view):
             Cart(session=session).save()
         Item.add_to_cart(product_id=request.POST.get('product'), session=session, count=request.POST.get('count'))
         response = render(request, SITE_THEME + view, context)
-        response.set_cookie('cart_id', session)
+        response.set_cookie('cart_id', session, max_age=365*24*60*60)
         return response
 
 
