@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="db.sqlite3">
-  <database-model serializer="dbm" rdbms="SQLITE" format-version="4.2">
+  <database-model serializer="dbm" rdbms="SQLITE" format-version="4.1">
     <root id="1"/>
     <schema id="2" parent="1" name="main">
       <Current>1</Current>
@@ -492,18 +492,18 @@ permission_id</ColNames>
       <DataType>datetime|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="133" parent="13" name="count">
+    <column id="133" parent="13" name="product_id">
       <Position>3</Position>
-      <DataType>decimal|0</DataType>
-      <NotNull>1</NotNull>
+      <DataType>integer|0</DataType>
     </column>
-    <column id="134" parent="13" name="product_id">
+    <column id="134" parent="13" name="cart_id">
       <Position>4</Position>
       <DataType>integer|0</DataType>
     </column>
-    <column id="135" parent="13" name="cart_id">
+    <column id="135" parent="13" name="count">
       <Position>5</Position>
-      <DataType>integer|0</DataType>
+      <DataType>decimal|0</DataType>
+      <NotNull>1</NotNull>
     </column>
     <index id="136" parent="13" name="cart_item_product_id_17acb13c">
       <ColNames>product_id</ColNames>

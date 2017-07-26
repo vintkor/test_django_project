@@ -20,6 +20,12 @@ class Cart(BaseModel):
             total_price += item.product.get_price_in_main_currency() * item.count
         return round(total_price, 2)
 
+    def delete(self, *args, **kwargs):
+        """ При удалении корзины очищаем все Item у которых корзына была удалена """
+        items = Item.objects.filter(cart_id=None)
+        items.delete()
+        super(Cart, self).delete(*args, **kwargs)
+
     class Meta:
         verbose_name_plural = "Корзины"
         verbose_name = "Корзина"
