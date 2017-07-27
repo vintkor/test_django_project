@@ -7,9 +7,15 @@
 {% block content %}
 <div class="catalog">
     <div class="container">
+        <div class="row" style="margin-bottom: 30px;">
+            <div class="col-md-12" style="text-align: center">
+                <h1>Каталог продукции </h1>
+                <pspan class="label label-default">Страница {{ products.number }} из {{ products.paginator.num_pages }}</pspan>
+            </div>
+        </div>
         <div class="row">
             {% for product in products %}
-                <div class="col-md-3">
+                <div class="col-md-3 product">
                     <div class="catalog__product panel panel-default">
                     <div class="catalog__product-header panel-heading">
                         <a href="{% url 'catalog_single_product' product.id %}">
@@ -36,6 +42,31 @@
                 </div>
             {% endfor %}
         </div>
+        <div class="row">
+            <div class="col-md-12" style="text-align: center;">
+                <ul class="pagination">
+                    {% if products.has_previous %}
+                        <li><a href="?page={{ products.previous_page_number }}">&laquo;</a></li>
+                    {% endif %}
+                    {% for page in list_pages %}
+                        {% if products.number == page %}
+                            <li class="active"><a>{{ page }}</a></li>
+                        {% else %}
+                            <li><a href="?page={{ page }}">{{ page }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if products.has_next %}
+                        <li><a href="?page={{ products.next_page_number }}">&raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
+
+<style>
+    .product:nth-child(4n+1) {
+        clear: both;
+    }
+</style>
 {% endblock content %}

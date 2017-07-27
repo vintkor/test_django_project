@@ -3,6 +3,7 @@ from catalog.models import CatalogProduct
 from testsite.settings import SITE_THEME
 from cart.models import Cart, Item
 from django.utils.crypto import get_random_string
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def add_to_cart(request, context, view):
@@ -19,8 +20,23 @@ def add_to_cart(request, context, view):
 
 
 def all_products(request):
-    products = CatalogProduct.objects.all().filter(active=True).order_by('-created')
-    context = {"products": products,}
+    products_list = CatalogProduct.objects.all().filter(active=True).order_by('-created')
+    paginator = Paginator(products_list, 20)
+
+    page = request.GET.get('page')
+
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+
+    list_pages = []
+    for page in range(0, paginator.num_pages):
+        list_pages.append(page+1)
+
+    context = {"products": products, "list_pages": list_pages}
     if request.POST:
         response = add_to_cart(request=request, context=context, view='/catalog/list_view.html')
         return response
