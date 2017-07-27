@@ -2,12 +2,20 @@ from django.db import models
 from testsite.baseModel import BaseModel
 from ckeditor_uploader.fields import RichTextUploadingField
 from mptt.models import MPTTModel, TreeForeignKey
+from django.utils.crypto import get_random_string
+
+
+def set_image_name(instance, filename):
+    name = get_random_string(40)
+    ext = filename.split('.')[-1]
+    path = 'categories/origin___{}.{}'.format(name, ext)
+    return path
 
 
 class Category(MPTTModel, BaseModel):
     category_title = models.CharField(max_length=255, verbose_name="Категория")
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
-    category_image = models.ImageField(blank=True, default="", upload_to="categories")
+    category_image = models.ImageField(blank=True, default="", upload_to=set_image_name)
     category_description = RichTextUploadingField(verbose_name="Описание категории", blank=True, default="")
 
     class Meta:
