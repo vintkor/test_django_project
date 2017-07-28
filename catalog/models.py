@@ -3,13 +3,24 @@ from testsite.baseModel import BaseModel
 from ckeditor_uploader.fields import RichTextUploadingField
 from mptt.models import MPTTModel, TreeForeignKey
 from feature.models import Set, Feature, Unit, Value
+from django.utils.crypto import get_random_string
+from PIL import Image
+from resizeimage import resizeimage
+from testsite.settings import BASE_DIR
+
+
+def set_image_name(instance, filename):
+    name = get_random_string(40)
+    ext = filename.split('.')[-1]
+    path = 'images/{}.{}'.format(name, ext)
+    return path
 
 
 class CatalogCategory(BaseModel, MPTTModel):
     title = models.CharField(verbose_name='Категория', max_length=255)
     slug = models.SlugField(verbose_name="Слаг", max_length=255, default='')
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
-    image = models.ImageField(blank=True, default="", upload_to="categories")
+    image = models.ImageField(blank=True, default="", upload_to=set_image_name)
     description = RichTextUploadingField(verbose_name="Описание категории", blank=True, default="")
     active = models.BooleanField(default=True, verbose_name="Вкл/Выкл")
     feature_set = models.ManyToManyField(Set, verbose_name="Набор характеристик")
@@ -66,7 +77,7 @@ class CatalogProduct(BaseModel):
     step = models.DecimalField(verbose_name="Шаг", max_digits=8, decimal_places=3, default=1)
     description = models.CharField(max_length=170, blank=True, verbose_name="META DESC", default="")
     text = RichTextUploadingField(verbose_name="Текст поста", blank=True, default="")
-    image = models.ImageField(verbose_name="Изображение", blank=True, default='', upload_to="catalog/product_created-%Y-%m-%d")
+    image = models.ImageField(verbose_name="Изображение", blank=True, default='', upload_to=set_image_name)
     active = models.BooleanField(default=True, verbose_name="Вкл/Выкл")
 
     def __str__(self):
@@ -91,8 +102,8 @@ class CatalogProduct(BaseModel):
         return self.currency.course * self.price
 
     def save(self, *args, **kwargs):
+        super(CatalogProduct, self).save(*args, **kwargs)
         if self.category:
-            super(CatalogProduct, self).save(*args, **kwargs)
             for s in Set.objects.filter(catalogcategory=self.category):
                 for f in Feature.objects.filter(set=s):
                     try:
@@ -100,6 +111,18 @@ class CatalogProduct(BaseModel):
                     except ProductFeature.DoesNotExist:
                         feature = ProductFeature(product=self, feature=f)
                         feature.save()
+        if self.image:
+            old_name = self.image.url.split('/')[-1].split('.')[0]
+            ext = self.image.url.split('/')[-1].split('.')[1]
+            thumb_size = [300, 360]
+            medium_size = [800, 800]
+            with open('{}{}'.format(BASE_DIR, self.image.url), 'r+b') as f:
+                with Image.open(f) as image:
+                    cover = resizeimage.resize_cover(image, thumb_size)
+                    cover.save('{}/media/images/{}__{}x{}.{}'.format(BASE_DIR, old_name, thumb_size[0], thumb_size[1], ext))
+                with Image.open(f) as image:
+                    cover = resizeimage.resize_cover(image, medium_size)
+                    cover.save('{}/media/images/{}__{}x{}.{}'.format(BASE_DIR, old_name, medium_size[0], medium_size[1], ext))
 
     show_image.allow_tags = True
     show_image.short_description = "Главное изображение"
@@ -135,7 +158,7 @@ class CatalogComment(BaseModel):
 
 class CatalogImage(BaseModel):
     parent = models.ForeignKey(CatalogProduct, related_name="images", verbose_name="Изображение")
-    image = models.ImageField(blank=True, default='', upload_to="catalog/product_created-%Y-%m-%d", verbose_name="Изображение")
+    image = models.ImageField(blank=True, default='', upload_to=set_image_name, verbose_name="Изображение")
     active = models.BooleanField(default=True, verbose_name="Вкл/Выкл")
 
     class Meta:

@@ -8,7 +8,7 @@ from django.utils.crypto import get_random_string
 def set_image_name(instance, filename):
     name = get_random_string(40)
     ext = filename.split('.')[-1]
-    path = 'categories/origin___{}.{}'.format(name, ext)
+    path = 'images/{}.{}'.format(name, ext)
     return path
 
 
@@ -49,7 +49,7 @@ class Post(BaseModel):
     post_category = TreeForeignKey(Category, blank=True)
     post_description = models.CharField(max_length=170, blank=True, verbose_name="META DESC", default="")
     post_text = RichTextUploadingField(verbose_name="Текст поста", blank=True, default="")
-    post_image = models.ImageField(blank=True, default='', upload_to="posts/post_created-%Y-%m-%d", verbose_name="Главное изображение")
+    post_image = models.ImageField(blank=True, default='', upload_to=set_image_name, verbose_name="Главное изображение")
     post_active = models.BooleanField(default=True, verbose_name="Вкл/Выкл")
 
     def __str__(self):
