@@ -56,4 +56,12 @@
         </div>
     </div>
 </div>
+
+
+
+    <hr>
+
+    {% for image in product.get_all_thumb %}
+        {{ image }}
+    {% endfor %}
 {% endblock content %}

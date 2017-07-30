@@ -20,6 +20,7 @@ def add_to_cart(request, context, view):
 
 
 def all_products(request):
+    root_categories = CatalogCategory.objects.filter(level=0)
     products_list = CatalogProduct.objects.all().filter(active=True).order_by('-created')
     paginator = Paginator(products_list, 20)
 
@@ -36,7 +37,7 @@ def all_products(request):
     for page in range(0, paginator.num_pages):
         list_pages.append(page+1)
 
-    context = {"products": products, "list_pages": list_pages}
+    context = {"products": products, "list_pages": list_pages, 'root_categories': root_categories}
     if request.POST:
         response = add_to_cart(request=request, context=context, view='/catalog/list_view.html')
         return response

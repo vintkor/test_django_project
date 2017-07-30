@@ -24,8 +24,17 @@
     <div class="container">
         <div class="row" style="margin-bottom: 30px;">
             <div class="col-md-12" style="text-align: center">
-                <h1>Каталог продукции </h1>
-                <pspan class="label label-default">Страница {{ products.number }} из {{ products.paginator.num_pages }}</pspan>
+                {% if category %}
+                    <h1>{{ category.title }} <span class="badge">Страница {{ products.number }} из {{ products.paginator.num_pages }}</span></h1>
+                    {% for children in category.get_children %}
+                        <a href="{% url 'catalog_category' children.id %}">{{ children.title }}</a>
+                    {% endfor %}
+                {% else %}
+                    <h1>Каталог продукции <span class="badge">Страница {{ products.number }} из {{ products.paginator.num_pages }}</span></h1>
+                    {% for children in root_categories %}
+                        <a href="{% url 'catalog_category' children.id %}">{{ children.title }}</a>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
         <div class="row">
@@ -78,6 +87,19 @@
         </div>
     </div>
 </div>
+
+{% if category %}
+    <div class="cat-desk">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>{{ category.title }}</h3>
+                    <div class="cat-desk__text">{{ category.description | safe }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
 
 <style>
     .product:nth-child(4n+1) {

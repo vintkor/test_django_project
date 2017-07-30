@@ -191,5 +191,13 @@ class CatalogImage(BaseModel):
         else:
             return "--"
 
+    # def get_thumb(self):
+    #     if self.image:
+    #         url = self.image.url.split('.')
+    #         url = url[0] + '__300x360.' + url[1]
+    #     else:
+    #         url = '//placehold.it/300x360'
+    #     return url
+
     show_image.allow_tags = True
     show_image.short_description = "Изображение"
