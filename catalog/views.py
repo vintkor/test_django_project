@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from catalog.models import CatalogProduct
+from catalog.models import CatalogProduct, CatalogCategory
 from testsite.settings import SITE_THEME
 from cart.models import Cart, Item
 from django.utils.crypto import get_random_string
@@ -37,6 +37,33 @@ def all_products(request):
         list_pages.append(page+1)
 
     context = {"products": products, "list_pages": list_pages}
+    if request.POST:
+        response = add_to_cart(request=request, context=context, view='/catalog/list_view.html')
+        return response
+
+    return render(request, SITE_THEME + '/catalog/list_view.html', context)
+
+
+def cat_products(request, cat_id):
+    category = CatalogCategory.objects.get(id=cat_id)
+    descendants = category.get_descendants(include_self=True)
+    products_list = CatalogProduct.objects.filter(active=True, category__in=descendants).order_by('-created')
+    paginator = Paginator(products_list, 20)
+
+    page = request.GET.get('page')
+
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+
+    list_pages = []
+    for page in range(0, paginator.num_pages):
+        list_pages.append(page + 1)
+
+    context = {"products": products, "list_pages": list_pages, 'category': category}
     if request.POST:
         response = add_to_cart(request=request, context=context, view='/catalog/list_view.html')
         return response

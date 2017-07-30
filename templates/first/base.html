@@ -67,6 +67,12 @@
         </div>
     </nav>
 
+    <div class="container">
+        {% block breadcrumbs %}
+            Default breadcrumbs in base.html
+        {% endblock breadcrumbs %}
+    </div>
+
     {% block content %}
         <div class="s1 container">
             <div class="row">

@@ -90,6 +90,22 @@ class CatalogProduct(BaseModel):
         else:
             return "--"
 
+    def get_thumb_image(self):
+        if self.image:
+            url = self.image.url.split('.')
+            url = url[0] + '__300x360.' + url[1]
+        else:
+            url = '//placehold.it/300x360'
+        return url
+
+    def get_medium_image(self):
+        if self.image:
+            url = self.image.url.split('.')
+            url = url[0] + '__800x800.' + url[1]
+        else:
+            url = '//placehold.it/800x800'
+        return url
+
     def get_count_comments(self):
         """ Получает количество комментарив поста """
         count = CatalogComment.objects.filter(parent=self.id).count()
