@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'ckeditor',
     'ckeditor_uploader',
+    'import_export',
     'blog',
     'feature',
     'catalog',
@@ -134,13 +135,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 
-# TINYMCE_DEFAULT_CONFIG = {
-#     'plugins': "table,spellchecker,paste,searchreplace",
-#     'theme': "advanced",
-#     'cleanup_on_startup': True,
-#     'custom_undo_redo_levels': 10,
-# }
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 SITE_THEME = 'first'
 
@@ -151,3 +150,15 @@ CKEDITOR_UPLOAD_PATH = 'uploads/'
 MPTT_ADMIN_LEVEL_INDENT = 20
 
 INTERNAL_IPS = '127.0.0.1'
+
+SUIT_CONFIG = {
+    'ADMIN_NAME': 'VashaHata.ua',
+    'MENU_ICONS': {
+        'sites': 'icon-leaf',
+        'auth': 'icon-lock',
+        'blog': 'icon-book',
+        'feature': 'icon-filter',
+        'catalog': 'icon-folder-open',
+        'cart': 'icon-shopping-cart',
+    }
+}

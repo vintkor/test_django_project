@@ -2,6 +2,8 @@ from django.contrib import admin
 from mptt.admin import DraggableMPTTAdmin
 from .models import CatalogCategory, CatalogComment, CatalogCurrency, CatalogImage, CatalogProduct, ProductFeature
 from feature.models import Feature
+from import_export import resources
+from import_export.admin import ImportExportActionModelAdmin
 
 
 class CatalogCommentInline(admin.StackedInline):
@@ -22,7 +24,7 @@ class FeatureInline(admin.TabularInline):
     suit_classes = 'suit-tab suit-tab-feature'
 
 
-class CatalogProductAdmin(admin.ModelAdmin):
+class CatalogProductAdmin(ImportExportActionModelAdmin):
     list_display = ["title", "category", "active", "price", "currency", "unit", "step", "get_count_comments", "created", "updated"]
     list_filter = ["active", "category"]
     search_fields = ['title']
@@ -36,6 +38,13 @@ class CatalogProductAdmin(admin.ModelAdmin):
     ]
 
     suit_form_tabs = (('product', 'Товар'), ('comment', 'Комментарии'), ('image', 'Изображения'), ('feature', 'Характеристика'))
+    resource_class = CatalogProduct
+
+
+class CatalogProductResource(resources.ModelResource):
+
+    class Meta:
+        model = CatalogProduct
 
 
 class CatalogCommentAdmin(admin.ModelAdmin):
