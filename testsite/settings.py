@@ -162,3 +162,5 @@ SUIT_CONFIG = {
         'cart': 'icon-shopping-cart',
     }
 }
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True

@@ -2,7 +2,6 @@ from django.contrib import admin
 from mptt.admin import DraggableMPTTAdmin
 from .models import CatalogCategory, CatalogComment, CatalogCurrency, CatalogImage, CatalogProduct, ProductFeature
 from feature.models import Feature
-from import_export import resources
 from import_export.admin import ImportExportActionModelAdmin
 
 
@@ -39,12 +38,6 @@ class CatalogProductAdmin(ImportExportActionModelAdmin):
 
     suit_form_tabs = (('product', 'Товар'), ('comment', 'Комментарии'), ('image', 'Изображения'), ('feature', 'Характеристика'))
     resource_class = CatalogProduct
-
-
-class CatalogProductResource(resources.ModelResource):
-
-    class Meta:
-        model = CatalogProduct
 
 
 class CatalogCommentAdmin(admin.ModelAdmin):
