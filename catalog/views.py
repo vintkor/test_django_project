@@ -4,8 +4,6 @@ from testsite.settings import SITE_THEME
 from cart.models import Cart, Item
 from django.utils.crypto import get_random_string
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponse
-from .resources import CatalogProductResource
 
 
 def add_to_cart(request, context, view):
@@ -84,14 +82,6 @@ def single_post(request, product_id):
         response = add_to_cart(request=request, context=context, view='/catalog/single-product.html')
         return response
     return render(request, SITE_THEME + '/catalog/single-product.html', context)
-
-
-def export(request):
-    product_resource = CatalogProductResource()
-    dataset = product_resource.export()
-    response = HttpResponse(dataset.json, content_type='application/json')
-    response['Content-Disposition'] = 'attachment; filename="products.json"'
-    return response
 
 
 
